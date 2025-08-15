@@ -128,6 +128,7 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
   const openApiKeyList = async () => {
     await ApiKeyListPopup.show({
       providerId: provider.id,
+      providerKind: 'llm',
       title: `${fancyProviderName} ${t('settings.provider.api.key.list.title')}`
     })
   }

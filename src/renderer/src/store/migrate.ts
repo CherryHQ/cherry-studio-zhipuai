@@ -2103,6 +2103,76 @@ const migrateConfig = {
       logger.error('migrate 131 error', error as Error)
       return state
     }
+  },
+  '132': (state: RootState) => {
+    try {
+      // 1. 推荐智谱作为第一位提供商，但只在用户没有自定义过顺序的情况下执行
+      const zhipuIndex = state.llm.providers.findIndex((p) => p.id === 'zhipu')
+      const siliconIndex = state.llm.providers.findIndex((p) => p.id === 'silicon')
+
+      // 如果智谱不在第一位，且硅基在第一位，说明这是默认顺序，我们可以推荐智谱
+      if (zhipuIndex !== 0 && siliconIndex === 0) {
+        // 将智谱移到第一位
+        const zhipuProvider = state.llm.providers[zhipuIndex]
+        state.llm.providers.splice(zhipuIndex, 1)
+        state.llm.providers.unshift(zhipuProvider)
+      }
+
+      // 2. 更新默认模型配置
+      // 找到智谱提供商
+      const zhipuProvider = state.llm.providers.find((p) => p.id === 'zhipu')
+      if (zhipuProvider) {
+        // 查找 GLM-4.5-Flash 模型
+        const glm45FlashModel = zhipuProvider.models.find((m) => m.id === 'glm-4.5-flash')
+
+        if (glm45FlashModel) {
+          // 更新默认模型配置 - 全部设为 GLM-4.5-Flash
+          state.llm.defaultModel = glm45FlashModel
+          state.llm.topicNamingModel = glm45FlashModel
+          state.llm.translateModel = glm45FlashModel
+        }
+      }
+
+      // 3. 更新默认绘图供应商为智谱
+      if (state.settings && state.settings.defaultPaintingProvider !== 'zhipu') {
+        state.settings.defaultPaintingProvider = 'zhipu'
+      }
+
+      // 4. 更新默认绘图模型为 CogView-3-Flash
+      // 这里我们不需要直接修改状态，因为默认模型是在组件中设置的
+      // 这个迁移主要用于版本标记，确保用户知道有新的默认模型
+
+      // 5. 更新知识库的默认嵌入模型为智谱的 embedding-3
+      // 这里我们不需要直接修改状态，因为默认模型是在组件中设置的
+      // 这个迁移主要用于版本标记，确保用户知道有新的默认嵌入模型
+
+      // 6. 为 codeTools 设置默认模型
+      if (state.codeTools) {
+        // 查找智谱提供商中的 GLM-4.5-Flash 模型
+        const zhipuProviderForCodeTools = state.llm.providers.find((p) => p.id === 'zhipu')
+        if (zhipuProviderForCodeTools) {
+          const glm45FlashModelForCodeTools = zhipuProviderForCodeTools.models.find((m) => m.id === 'glm-4.5-flash')
+
+          if (glm45FlashModelForCodeTools) {
+            // 为所有 CLI 工具设置默认模型为 GLM-4.5-Flash
+            if (state.codeTools.selectedModels['qwen-code'] === null) {
+              state.codeTools.selectedModels['qwen-code'] = glm45FlashModelForCodeTools
+            }
+            if (state.codeTools.selectedModels['claude-code'] === null) {
+              state.codeTools.selectedModels['claude-code'] = glm45FlashModelForCodeTools
+            }
+            if (state.codeTools.selectedModels['gemini-cli'] === null) {
+              state.codeTools.selectedModels['gemini-cli'] = glm45FlashModelForCodeTools
+            }
+          }
+        }
+      }
+
+      return state
+    } catch (error) {
+      logger.error('migrate 131 error', error as Error)
+      return state
+    }
   }
 }
 

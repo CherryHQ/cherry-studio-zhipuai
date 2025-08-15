@@ -1,13 +1,33 @@
-import { WebSearchProvider, WebSearchProviderId } from '@renderer/types'
+import ZhipuLogo from '@renderer/assets/images/providers/zhipu.png'
+import BochaLogo from '@renderer/assets/images/search/bocha.webp'
+import ExaLogo from '@renderer/assets/images/search/exa.png'
+import SearxngLogo from '@renderer/assets/images/search/searxng.svg'
+import TavilyLogo from '@renderer/assets/images/search/tavily.png'
 
-type WebSearchProviderConfig = {
-  websites: {
-    official: string
-    apiKey?: string
+export function getWebSearchProviderLogo(providerId: string) {
+  switch (providerId) {
+    case 'zhipu':
+      return ZhipuLogo
+    case 'tavily':
+      return TavilyLogo
+    case 'searxng':
+      return SearxngLogo
+    case 'exa':
+      return ExaLogo
+    case 'bocha':
+      return BochaLogo
+    default:
+      return undefined
   }
 }
 
-export const WEB_SEARCH_PROVIDER_CONFIG: Record<WebSearchProviderId, WebSearchProviderConfig> = {
+export const WEB_SEARCH_PROVIDER_CONFIG = {
+  zhipu: {
+    websites: {
+      official: 'https://docs.bigmodel.cn/cn/guide/tools/web-search',
+      apiKey: 'https://docs.bigmodel.cn/cn/guide/tools/web-search'
+    }
+  },
   tavily: {
     websites: {
       official: 'https://tavily.com',
@@ -47,46 +67,3 @@ export const WEB_SEARCH_PROVIDER_CONFIG: Record<WebSearchProviderId, WebSearchPr
     }
   }
 }
-
-export const WEB_SEARCH_PROVIDERS: WebSearchProvider[] = [
-  {
-    id: 'tavily',
-    name: 'Tavily',
-    apiHost: 'https://api.tavily.com',
-    apiKey: ''
-  },
-  {
-    id: 'searxng',
-    name: 'Searxng',
-    apiHost: '',
-    basicAuthUsername: '',
-    basicAuthPassword: ''
-  },
-  {
-    id: 'exa',
-    name: 'Exa',
-    apiHost: 'https://api.exa.ai',
-    apiKey: ''
-  },
-  {
-    id: 'bocha',
-    name: 'Bocha',
-    apiHost: 'https://api.bochaai.com',
-    apiKey: ''
-  },
-  {
-    id: 'local-google',
-    name: 'Google',
-    url: 'https://www.google.com/search?q=%s'
-  },
-  {
-    id: 'local-bing',
-    name: 'Bing',
-    url: 'https://cn.bing.com/search?q=%s&ensearch=1'
-  },
-  {
-    id: 'local-baidu',
-    name: 'Baidu',
-    url: 'https://www.baidu.com/s?wd=%s'
-  }
-] as const

@@ -1,4 +1,5 @@
 import { PushpinOutlined } from '@ant-design/icons'
+import ModelLabels from '@renderer/components/ModelLabels'
 import ModelTagsWithLabel from '@renderer/components/ModelTagsWithLabel'
 import { TopView } from '@renderer/components/TopView'
 import { DynamicVirtualList, type DynamicVirtualListRef } from '@renderer/components/VirtualList'
@@ -71,7 +72,27 @@ const PopupContainer: React.FC<Props> = ({ model, resolve, modelFilter }) => {
         models = filterModelsByKeywords(searchText, models, provider)
       }
 
-      return sortBy(models, ['group', 'name'])
+      // 智谱模型特殊处理
+      if (provider.id === 'zhipu') {
+        const hasApiKey = provider.apiKey && provider.apiKey.trim() !== ''
+
+        // 如果未配置API Key，只显示四个指定模型
+        if (!hasApiKey) {
+          models = models.filter(
+            (m) => m.id === 'glm-4.5-flash' || m.id === 'glm-4.5' || m.id === 'glm-4.5-air' || m.id === 'glm-4.5-x'
+          )
+        }
+
+        // 智谱模型排序：让 GLM-4.5-Flash 排在最前面
+        models = sortBy(models, (model) => {
+          if (model.id === 'glm-4.5-flash') return '0' // 排在最前面
+          return model.name // 其他模型按名称排序
+        })
+      } else {
+        models = sortBy(models, ['group', 'name'])
+      }
+
+      return models
     },
     [searchText]
   )
@@ -88,12 +109,13 @@ const PopupContainer: React.FC<Props> = ({ model, resolve, modelFilter }) => {
         name: (
           <ModelName>
             {model.name}
+            <ModelLabels model={model} parentContainer="SelectModelPopup" />
             {isPinned && <span style={{ color: 'var(--color-text-3)' }}> | {groupName}</span>}
           </ModelName>
         ),
         tags: (
           <TagsContainer>
-            <ModelTagsWithLabel model={model} size={11} showLabel={false} showTooltip={false} />
+            <ModelTagsWithLabel model={model} size={11} showLabel={false} showTooltip={true} />
           </TagsContainer>
         ),
         icon: (
@@ -461,11 +483,13 @@ const ModelItemLeft = styled.div`
 
 const ModelName = styled.span`
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   flex: 1;
   margin: 0 8px;
   min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
 `
 
 const TagsContainer = styled.div`

@@ -8,12 +8,6 @@ export type ApiKeyValidity = {
   error?: string
 }
 
-export type ApiProvider = Provider | WebSearchProvider | PreprocessProvider
+export type ApiProviderUnion = Provider | WebSearchProvider | PreprocessProvider
 
-export type UpdateProviderFunc = (p: Partial<Provider>) => void
-
-export type UpdateWebSearchProviderFunc = (p: Partial<WebSearchProvider>) => void
-
-export type UpdatePreprocessProviderFunc = (p: Partial<PreprocessProvider>) => void
-
-export type UpdateApiProviderFunc = UpdateProviderFunc | UpdateWebSearchProviderFunc | UpdatePreprocessProviderFunc
+export type ApiProviderKind = 'llm' | 'websearch' | 'doc-preprocess'

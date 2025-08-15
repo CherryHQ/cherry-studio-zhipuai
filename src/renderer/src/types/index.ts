@@ -361,6 +361,8 @@ export type Model = {
   endpoint_type?: EndpointType
   supported_endpoint_types?: EndpointType[]
   supported_text_delta?: boolean
+  isFree?: boolean
+  apiKeyLink?: string
 }
 
 export type Suggestion = {
@@ -373,7 +375,7 @@ export type PaintingParams = {
   files: FileMetadata[]
 }
 
-export type PaintingProvider = 'aihubmix' | 'silicon' | 'dmxapi' | 'new-api'
+export type PaintingProvider = 'zhipu' | 'aihubmix' | 'silicon' | 'dmxapi' | 'new-api'
 
 export interface Painting extends PaintingParams {
   model?: string
@@ -609,20 +611,8 @@ export type KnowledgeBaseParams = {
   }
 }
 
-export const PreprocessProviderIds = {
-  doc2x: 'doc2x',
-  mistral: 'mistral',
-  mineru: 'mineru'
-} as const
-
-export type PreprocessProviderId = keyof typeof PreprocessProviderIds
-
-export const isPreprocessProviderId = (id: string): id is PreprocessProviderId => {
-  return Object.hasOwn(PreprocessProviderIds, id)
-}
-
 export interface PreprocessProvider {
-  id: PreprocessProviderId
+  id: string
   name: string
   apiKey?: string
   apiHost?: string
@@ -687,24 +677,8 @@ export type ExternalToolResult = {
   memories?: MemoryItem[]
 }
 
-export const WebSearchProviderIds = {
-  tavily: 'tavily',
-  searxng: 'searxng',
-  exa: 'exa',
-  bocha: 'bocha',
-  'local-google': 'local-google',
-  'local-bing': 'local-bing',
-  'local-baidu': 'local-baidu'
-} as const
-
-export type WebSearchProviderId = keyof typeof WebSearchProviderIds
-
-export const isWebSearchProviderId = (id: string): id is WebSearchProviderId => {
-  return Object.hasOwn(WebSearchProviderIds, id)
-}
-
 export type WebSearchProvider = {
-  id: WebSearchProviderId
+  id: string
   name: string
   apiKey?: string
   apiHost?: string

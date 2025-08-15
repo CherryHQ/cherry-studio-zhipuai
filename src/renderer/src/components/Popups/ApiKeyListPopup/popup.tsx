@@ -1,13 +1,14 @@
 import { TopView } from '@renderer/components/TopView'
-import { isPreprocessProviderId, isWebSearchProviderId } from '@renderer/types'
 import { Modal } from 'antd'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { DocPreprocessApiKeyList, LlmApiKeyList, WebSearchApiKeyList } from './list'
+import { ApiProviderKind } from './types'
 
 interface ShowParams {
   providerId: string
+  providerKind: ApiProviderKind
   title?: string
   showHealthCheck?: boolean
 }
@@ -19,7 +20,7 @@ interface Props extends ShowParams {
 /**
  * API Key 列表弹窗容器组件
  */
-const PopupContainer: React.FC<Props> = ({ providerId, title, resolve, showHealthCheck = true }) => {
+const PopupContainer: React.FC<Props> = ({ providerId, providerKind, title, resolve, showHealthCheck = true }) => {
   const [open, setOpen] = useState(true)
   const { t } = useTranslation()
 
@@ -32,14 +33,17 @@ const PopupContainer: React.FC<Props> = ({ providerId, title, resolve, showHealt
   }
 
   const ListComponent = useMemo(() => {
-    if (isWebSearchProviderId(providerId)) {
-      return <WebSearchApiKeyList providerId={providerId} showHealthCheck={showHealthCheck} />
+    switch (providerKind) {
+      case 'llm':
+        return LlmApiKeyList
+      case 'websearch':
+        return WebSearchApiKeyList
+      case 'doc-preprocess':
+        return DocPreprocessApiKeyList
+      default:
+        return null
     }
-    if (isPreprocessProviderId(providerId)) {
-      return <DocPreprocessApiKeyList providerId={providerId} showHealthCheck={showHealthCheck} />
-    }
-    return <LlmApiKeyList providerId={providerId} showHealthCheck={showHealthCheck} />
-  }, [providerId, showHealthCheck])
+  }, [providerKind])
 
   return (
     <Modal
@@ -51,7 +55,9 @@ const PopupContainer: React.FC<Props> = ({ providerId, title, resolve, showHealt
       centered
       width={600}
       footer={null}>
-      {ListComponent}
+      {ListComponent && (
+        <ListComponent providerId={providerId} providerKind={providerKind} showHealthCheck={showHealthCheck} />
+      )}
     </Modal>
   )
 }
