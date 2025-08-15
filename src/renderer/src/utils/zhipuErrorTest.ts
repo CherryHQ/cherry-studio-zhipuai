@@ -40,6 +40,7 @@ export const ZhipuErrorTest = {
   clearTest() {
     localStorage.removeItem('test_zhipu_error')
     console.log('✅ 已清除测试模式')
+    console.log('💡 现在可以正常使用智谱模型了')
   },
 
   /**
@@ -49,8 +50,11 @@ export const ZhipuErrorTest = {
     const testError = localStorage.getItem('test_zhipu_error')
     if (testError) {
       console.log(`🔧 当前测试模式：${testError}`)
+      console.log('⚠️  注意：测试模式会影响智谱模型的正常使用')
+      console.log('💡 测试完成后请运行 ZhipuErrorTest.clearTest() 清除测试模式')
     } else {
       console.log('🔧 当前无测试模式')
+      console.log('✅ 智谱模型可以正常使用')
     }
   },
 

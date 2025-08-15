@@ -26,9 +26,10 @@ export const ErrorHandlerMiddleware =
     const { shouldThrow } = params
 
     try {
-      // 智谱错误测试模式 - 可以通过URL参数或localStorage控制
+      // 智谱错误测试模式 - 仅在开发环境或明确设置时启用
       const testZhipuError = localStorage.getItem('test_zhipu_error')
       if (testZhipuError && isZhipuModel(params.assistant.model)) {
+        logger.debug('🔧 智谱错误测试模式已激活:', { testError: testZhipuError })
         const testError = createTestZhipuError(testZhipuError)
         throw testError
       }
