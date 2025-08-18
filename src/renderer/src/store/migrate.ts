@@ -2106,6 +2106,15 @@ const migrateConfig = {
   },
   '132': (state: RootState) => {
     try {
+      state.settings.mathEnableSingleDollar = true
+      return state
+    } catch (error) {
+      logger.error('migrate 132 error', error as Error)
+      return state
+    }
+  },
+  '133': (state: RootState) => {
+    try {
       // 1. 推荐智谱作为第一位提供商，但只在用户没有自定义过顺序的情况下执行
       const zhipuIndex = state.llm.providers.findIndex((p) => p.id === 'zhipu')
       const siliconIndex = state.llm.providers.findIndex((p) => p.id === 'silicon')
