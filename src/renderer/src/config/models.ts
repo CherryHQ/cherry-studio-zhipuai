@@ -1249,7 +1249,7 @@ export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> =
     {
       id: 'glm-4v',
       provider: 'zhipu',
-      name: 'GLM 4V',
+      name: 'GLM-4V',
       group: 'GLM-4v',
       apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
     },
