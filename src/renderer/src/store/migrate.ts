@@ -2235,6 +2235,19 @@ const migrateConfig = {
           state.llm.topicNamingModel = glm45FlashModel
           state.llm.translateModel = glm45FlashModel
         }
+
+        // 迁移逻辑1: 检测GLM-4V模型，如果有就改成GLM-4V
+        zhipuProvider.models.forEach(model => {
+          if (model.group === 'GLM 4V') {
+            model.group = 'GLM-4v'
+          }
+        })
+
+        // 迁移逻辑2: 如果GLM-4.5V在GLM-4.5系列下面，要添加GLM-4.5V系列并把GLM-4.5V转移过去
+        const glm45vModel = zhipuProvider.models.find(m => m.id === 'glm-4.5v')
+        if (glm45vModel && glm45vModel.group === 'GLM-4.5') {
+          glm45vModel.group = 'GLM-4.5V'
+        }
       }
 
       // 3. 更新默认绘图供应商为智谱

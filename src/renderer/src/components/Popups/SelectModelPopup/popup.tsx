@@ -79,7 +79,7 @@ const PopupContainer: React.FC<Props> = ({ model, resolve, modelFilter }) => {
         // 如果未配置API Key，只显示四个指定模型
         if (!hasApiKey) {
           models = models.filter(
-            (m) => m.id === 'glm-4.5-flash' || m.id === 'glm-4.5' || m.id === 'glm-4.5-air' || m.id === 'glm-4.5-x'
+            (m) => m.id === 'glm-4.5-flash' || m.id === 'glm-4.5' || m.id === 'glm-4.5-air' || m.id === 'glm-4.5v'
           )
         }
 
@@ -87,11 +87,10 @@ const PopupContainer: React.FC<Props> = ({ model, resolve, modelFilter }) => {
         models = sortBy(models, (model) => {
           // 定义GLM-4.5系列的排序优先级
           const sortOrder = {
-            'glm-4.5': '0',
-            'glm-4.5-x': '1',
+            'glm-4.5-flash': '0',
+            'glm-4.5': '1',
             'glm-4.5-air': '2',
-            'glm-4.5-airx': '3',
-            'glm-4.5-flash': '4'
+            'glm-4.5v': '3',
           }
           return sortOrder[model.id] || model.name // 其他模型按名称排序
         })
