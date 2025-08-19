@@ -68,14 +68,21 @@ const ModelSelector = ({
         // 如果未配置API Key，只显示四个指定模型
         if (!hasApiKey) {
           filteredModels = filteredModels.filter(
-            (m) => m.id === 'glm-4.5-flash' || m.id === 'glm-4.5' || m.id === 'glm-4.5-air' || m.id === 'glm-4.5-x'
+            (m) => m.id === 'glm-4.5-flash' || m.id === 'glm-4.5' || m.id === 'glm-4.5-air' || m.id === 'glm-4.5v'
           )
         }
 
-        // 智谱模型排序：让 GLM-4.5-Flash 排在最前面
+        // 智谱模型排序：按照新的顺序排序
         filteredModels = sortBy(filteredModels, (model) => {
-          if (model.id === 'glm-4.5-flash') return '0' // 排在最前面
-          return model.name // 其他模型按名称排序
+          // 定义GLM-4.5系列的排序优先级
+          const sortOrder = {
+            'glm-4.5-flash': '0',
+            'glm-4.5': '1',
+            'glm-4.5-air': '2',
+            'glm-4.5v': '3',
+            'glm-4.5-airx': '4',
+          }
+          return sortOrder[model.id] || model.name // 其他模型按名称排序
         })
       }
 

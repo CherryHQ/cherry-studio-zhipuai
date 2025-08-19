@@ -1,5 +1,8 @@
 import { PlusOutlined } from '@ant-design/icons'
+import { loggerService } from '@logger'
+import AiProvider from '@renderer/aiCore'
 import { Navbar, NavbarCenter, NavbarRight } from '@renderer/components/app/Navbar'
+import ModelLabels from '@renderer/components/ModelLabels'
 import { HStack } from '@renderer/components/Layout'
 import { isMac } from '@renderer/config/constant'
 import { getProviderLogo } from '@renderer/config/providers'
@@ -7,13 +10,14 @@ import { usePaintings } from '@renderer/hooks/usePaintings'
 import { useAllProviders } from '@renderer/hooks/useProvider'
 import { useRuntime } from '@renderer/hooks/useRuntime'
 import { getProviderLabel } from '@renderer/i18n/label'
+import FileManager from '@renderer/services/FileManager'
 import { useAppDispatch } from '@renderer/store'
 import { setGenerating } from '@renderer/store/runtime'
 import type { PaintingsState } from '@renderer/types'
 import { uuid } from '@renderer/utils'
 import { Avatar, Button, InputNumber, Radio, Select } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
-import { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
@@ -22,7 +26,9 @@ import SendMessageButton from '../home/Inputbar/SendMessageButton'
 import { SettingHelpLink, SettingTitle } from '../settings'
 import Artboard from './components/Artboard'
 import PaintingsList from './components/PaintingsList'
-import { COURSE_URL, DEFAULT_PAINTING, IMAGE_SIZES, QUALITY_OPTIONS, TOP_UP_URL } from './config/ZhipuConfig'
+import { COURSE_URL, DEFAULT_PAINTING, IMAGE_SIZES, QUALITY_OPTIONS, TOP_UP_URL, ZHIPU_PAINTING_MODELS } from './config/ZhipuConfig'
+
+const logger = loggerService.withContext('ZhipuPage')
 
 const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
   const [mode] = useState<keyof PaintingsState>('paintings')
@@ -101,30 +107,97 @@ const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
       return
     }
 
+    // 检查是否需要重新生成（如果已有图片）
+    if (painting.files.length > 0) {
+      const confirmed = await window.modal.confirm({
+        content: t('paintings.regenerate.confirm'),
+        centered: true
+      })
+      if (!confirmed) return
+      await FileManager.deleteFiles(painting.files)
+    }
+
     setIsLoading(true)
     dispatch(setGenerating(true))
     const controller = new AbortController()
     setAbortController(controller)
 
     try {
-      // 这里添加Zhipu的API调用逻辑
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-
-      const newPainting = {
-        ...painting,
-        urls: [`https://example.com/generated-image-${Date.now()}.png`],
-        files: []
+      // 使用AiProvider调用智谱AI绘图API
+      const aiProvider = new AiProvider(zhipuProvider)
+      
+      // 准备API请求参数
+      const request = {
+        model: painting.model,
+        prompt: painting.prompt,
+        imageSize: painting.imageSize,
+        batchSize: painting.numImages,
+        signal: controller.signal
       }
 
-      updatePaintingState(newPainting)
+      // 调用智谱AI绘图API
+      const imageUrls = await aiProvider.generateImage(request)
 
-      window.message.success({
-        content: t('paintings.generate_success')
-      })
+      // 下载图片到本地文件
+      if (imageUrls.length > 0) {
+        const downloadedFiles = await Promise.all(
+          imageUrls.map(async (url) => {
+            try {
+              if (!url || url.trim() === '') {
+                window.message.warning({
+                  content: t('message.empty_url'),
+                  key: 'empty-url-warning'
+                })
+                return null
+              }
+              return await window.api.file.download(url)
+            } catch (error) {
+              if (
+                error instanceof Error &&
+                (error.message.includes('Failed to parse URL') || error.message.includes('Invalid URL'))
+              ) {
+                window.message.warning({
+                  content: t('message.empty_url'),
+                  key: 'empty-url-warning'
+                })
+              }
+              return null
+            }
+          })
+        )
+
+        const validFiles = downloadedFiles.filter((file): file is any => file !== null)
+
+        await FileManager.addFiles(validFiles)
+
+        // 处理响应结果
+        const newPainting = {
+          ...painting,
+          urls: imageUrls,
+          files: validFiles
+        }
+
+        updatePaintingState(newPainting)
+
+        window.message.success({
+          content: t('paintings.generate_success')
+        })
+      }
     } catch (error) {
       if (error instanceof Error && error.name !== 'AbortError') {
+        // 处理智谱AI特定错误
+        let errorMessage = t('paintings.req_error_text')
+        
+        if (error.message.includes('401')) {
+          errorMessage = t('error.provider_api_key_invalid')
+        } else if (error.message.includes('429')) {
+          errorMessage = t('error.provider_rate_limit')
+        } else if (error.message.includes('402')) {
+          errorMessage = t('error.provider_insufficient_balance')
+        }
+        
         window.modal.error({
-          content: t('paintings.req_error_text'),
+          content: errorMessage,
           centered: true
         })
       }
@@ -219,10 +292,7 @@ const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
     setPainting(addedPainting)
   }
 
-  const modelOptions = [
-    { label: 'CogView-3-Flash', value: 'cogview-3-flash' },
-    { label: 'CogView-4-250304', value: 'cogview-4-250304' }
-  ]
+  // 移除modelOptions的定义，直接在Select中使用
 
   useEffect(() => {
     if (!paintings || paintings.length === 0) {
@@ -280,7 +350,16 @@ const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
           </Select>
 
           <SettingTitle style={{ marginBottom: 5, marginTop: 15 }}>{t('common.model')}</SettingTitle>
-          <Select value={painting.model} options={modelOptions} onChange={onSelectModel} />
+          <Select value={painting.model} onChange={onSelectModel}>
+            {ZHIPU_PAINTING_MODELS.map((model) => (
+              <Select.Option key={model.id} value={model.id}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span>{model.name}</span>
+                  <ModelLabels model={model} parentContainer="default" />
+                </div>
+              </Select.Option>
+            ))}
+          </Select>
 
           {painting.model === 'cogview-4-250304' && (
             <>

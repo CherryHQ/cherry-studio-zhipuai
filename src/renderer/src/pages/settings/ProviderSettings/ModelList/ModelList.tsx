@@ -35,11 +35,13 @@ const calculateModelGroups = (models: Model[], searchText: string): ModelGroups 
   const filteredModels = searchText ? filterModelsByKeywords(searchText, models) : models
   const grouped = groupBy(filteredModels, 'group')
 
-  // 自定义排序逻辑，让智谱的 GLM-4.5 系列排在 GLM-4 系列前面
+  // 自定义排序逻辑，让智谱的模型系列按版本排序
   const sortedGroups = sortBy(toPairs(grouped), ([key]) => {
     // 智谱模型特殊排序
     if (key === 'GLM-4.5') return '0' // 让 GLM-4.5 排在最前面
-    if (key === 'GLM-4') return '1' // 让 GLM-4 排在 GLM-4.5 后面
+    if (key === 'GLM-4.5V') return '1' // 让 GLM-4.5V 排在 GLM-4.5 后面
+    if (key === 'GLM-4') return '2' // 让 GLM-4 排在 GLM-4.5V 后面
+    if (key === 'GLM-3') return '3' // 让 GLM-3 排在 GLM-4 后面
     return key // 其他分组按字母顺序排序
   })
 

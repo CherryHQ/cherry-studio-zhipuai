@@ -83,10 +83,17 @@ const PopupContainer: React.FC<Props> = ({ model, resolve, modelFilter }) => {
           )
         }
 
-        // 智谱模型排序：让 GLM-4.5-Flash 排在最前面
+        // 智谱模型排序：按照新的顺序排序
         models = sortBy(models, (model) => {
-          if (model.id === 'glm-4.5-flash') return '0' // 排在最前面
-          return model.name // 其他模型按名称排序
+          // 定义GLM-4.5系列的排序优先级
+          const sortOrder = {
+            'glm-4.5': '0',
+            'glm-4.5-x': '1',
+            'glm-4.5-air': '2',
+            'glm-4.5-airx': '3',
+            'glm-4.5-flash': '4'
+          }
+          return sortOrder[model.id] || model.name // 其他模型按名称排序
         })
       } else {
         models = sortBy(models, ['group', 'name'])

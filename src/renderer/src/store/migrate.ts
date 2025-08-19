@@ -2133,9 +2133,23 @@ const migrateConfig = {
         // 添加新的4.5系列模型
         const newModels = [
           {
+            id: 'glm-4.5-flash',
+            provider: 'zhipu',
+            name: 'GLM-4.5-Flash',
+            group: 'GLM-4.5',
+            apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
+          },
+          {
             id: 'glm-4.5',
             provider: 'zhipu',
             name: 'GLM-4.5',
+            group: 'GLM-4.5',
+            apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
+          },
+          {
+            id: 'glm-4.5-x',
+            provider: 'zhipu',
+            name: 'GLM-4.5-X',
             group: 'GLM-4.5',
             apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
           },
@@ -2154,17 +2168,10 @@ const migrateConfig = {
             apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
           },
           {
-            id: 'glm-4.5-x',
-            provider: 'zhipu',
-            name: 'GLM-4.5-X',
-            group: 'GLM-4.5',
-            apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
-          },
-          {
             id: 'glm-4.5v',
             provider: 'zhipu',
             name: 'GLM-4.5V',
-            group: 'GLM-4.5',
+            group: 'GLM-4.5V',
             apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
           },
           {
@@ -2180,6 +2187,20 @@ const migrateConfig = {
             name: 'GLM-4V-Flash',
             group: 'GLM-4v',
             isFree: true
+          },
+          {
+            id: 'cogview-3-flash',
+            provider: 'zhipu',
+            name: 'CogView-3-Flash',
+            group: 'GLM-3',
+            isFree: true
+          },
+          {
+            id: 'cogview-4-250304',
+            provider: 'zhipu',
+            name: 'CogView-4-250304',
+            group: 'GLM-4',
+            apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
           }
         ]
 

@@ -11,6 +11,7 @@ import { NewAPIClient } from './NewAPIClient'
 import { OpenAIAPIClient } from './openai/OpenAIApiClient'
 import { OpenAIResponseAPIClient } from './openai/OpenAIResponseAPIClient'
 import { PPIOAPIClient } from './ppio/PPIOAPIClient'
+import { ZhipuAPIClient } from './zhipu/ZhipuAPIClient'
 
 const logger = loggerService.withContext('ApiClientFactory')
 
@@ -47,30 +48,34 @@ export class ApiClientFactory {
       instance = new PPIOAPIClient(provider) as BaseApiClient
       return instance
     }
+    if (provider.id === 'zhipu') {
+      logger.debug(`Creating ZhipuAPIClient for provider: ${provider.id}`)
+      instance = new ZhipuAPIClient(provider) as BaseApiClient
+      return instance
+    }
 
     // 然后检查标准的provider type
     switch (provider.type) {
-      case 'openai':
-        instance = new OpenAIAPIClient(provider) as BaseApiClient
-        break
-      case 'azure-openai':
-      case 'openai-response':
-        instance = new OpenAIResponseAPIClient(provider) as BaseApiClient
-        break
-      case 'gemini':
-        instance = new GeminiAPIClient(provider) as BaseApiClient
-        break
-      case 'vertexai':
-        instance = new VertexAPIClient(provider) as BaseApiClient
-        break
       case 'anthropic':
+        logger.debug(`Creating AnthropicAPIClient for provider: ${provider.id}`)
         instance = new AnthropicAPIClient(provider) as BaseApiClient
         break
       case 'aws-bedrock':
+        logger.debug(`Creating AwsBedrockAPIClient for provider: ${provider.id}`)
         instance = new AwsBedrockAPIClient(provider) as BaseApiClient
         break
+      case 'gemini':
+        logger.debug(`Creating GeminiAPIClient for provider: ${provider.id}`)
+        instance = new GeminiAPIClient(provider) as BaseApiClient
+        break
+      case 'vertex':
+        logger.debug(`Creating VertexAPIClient for provider: ${provider.id}`)
+        instance = new VertexAPIClient(provider) as BaseApiClient
+        break
+      case 'openai':
+      case 'azure-openai':
       default:
-        logger.debug(`Using default OpenAIApiClient for provider: ${provider.id}`)
+        logger.debug(`Creating OpenAIAPIClient for provider: ${provider.id}`)
         instance = new OpenAIAPIClient(provider) as BaseApiClient
         break
     }
