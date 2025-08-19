@@ -13,7 +13,7 @@ import FileManager from '@renderer/services/FileManager'
 import { useAppDispatch } from '@renderer/store'
 import { setGenerating } from '@renderer/store/runtime'
 import type { PaintingsState } from '@renderer/types'
-import { uuid } from '@renderer/utils'
+import { uuid, getErrorMessage } from '@renderer/utils'
 import { Avatar, Button, InputNumber, Radio, Select } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
 import { FC, useEffect, useState } from 'react'
@@ -90,7 +90,7 @@ const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
 
     if (!zhipuProvider.apiKey) {
       window.modal.error({
-        content: t('error.provider_api_key_required'),
+        content: t('error.no_api_key'),
         centered: true
       })
       return
@@ -127,8 +127,10 @@ const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
       const request = {
         model: painting.model,
         prompt: painting.prompt,
+        negativePrompt: painting.negativePrompt,
         imageSize: painting.imageSize,
         batchSize: painting.numImages,
+        quality: painting.quality,
         signal: controller.signal
       }
 
@@ -182,19 +184,8 @@ const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
       }
     } catch (error) {
       if (error instanceof Error && error.name !== 'AbortError') {
-        // 处理智谱AI特定错误
-        let errorMessage = t('paintings.req_error_text')
-        
-        if (error.message.includes('401')) {
-          errorMessage = t('error.provider_api_key_invalid')
-        } else if (error.message.includes('429')) {
-          errorMessage = t('error.provider_rate_limit')
-        } else if (error.message.includes('402')) {
-          errorMessage = t('error.provider_insufficient_balance')
-        }
-        
         window.modal.error({
-          content: errorMessage,
+          content: getErrorMessage(error),
           centered: true
         })
       }

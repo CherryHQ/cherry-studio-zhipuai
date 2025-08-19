@@ -10,11 +10,13 @@ import {
   setSelectedModel
 } from '@renderer/store/codeTools'
 import { Model } from '@renderer/types'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
+import { useProviders } from './useProvider'
 
 export const useCodeTools = () => {
   const dispatch = useAppDispatch()
   const codeToolsState = useAppSelector((state) => state.codeTools)
+  const { providers } = useProviders()
   const logger = loggerService.withContext('useCodeTools')
 
   // 设置选择的 CLI 工具
@@ -87,6 +89,23 @@ export const useCodeTools = () => {
 
   // 检查是否可以启动（所有必需字段都已填写）
   const canLaunch = Boolean(codeToolsState.selectedCliTool && selectedModel && codeToolsState.currentDirectory)
+
+  // 自动设置默认模型：当某个CLI工具的模型为null时，设置为GLM-4.5-Flash
+  useEffect(() => {
+    // 检查当前CLI工具的模型是否为null
+    const currentToolModel = codeToolsState.selectedModels[codeToolsState.selectedCliTool]
+    if (!currentToolModel) {
+      // 查找智谱提供商中的 GLM-4.5-Flash 模型
+      const zhipuProvider = providers.find((p) => p.id === 'zhipu')
+      if (zhipuProvider) {
+        const glm45FlashModel = zhipuProvider.models.find((m) => m.id === 'glm-4.5-flash')
+        if (glm45FlashModel) {
+          logger.debug(`为CLI工具 ${codeToolsState.selectedCliTool} 设置默认模型 GLM-4.5-Flash`)
+          setModel(glm45FlashModel)
+        }
+      }
+    }
+  }, [codeToolsState.selectedCliTool, codeToolsState.selectedModels, providers, setModel, logger])
 
   return {
     // 状态

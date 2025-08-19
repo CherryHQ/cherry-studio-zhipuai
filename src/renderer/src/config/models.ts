@@ -279,7 +279,8 @@ const FUNCTION_CALLING_EXCLUDED_MODELS = [
   'AIDC-AI/Marco-o1',
   'gemini-1(?:\\.[\\w-]+)?',
   'qwen-mt(?:-[\\w-]+)?',
-  'gpt-5-chat(?:-[\\w-]+)?'
+  'gpt-5-chat(?:-[\\w-]+)?',
+  'glm-4\\.5v'
 ]
 
 export const FUNCTION_CALLING_REGEX = new RegExp(

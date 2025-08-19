@@ -57,7 +57,8 @@ const ModelSelector = ({
   // 单个 provider 的模型选项
   const getModelOptions = useCallback(
     (p: Provider, fancyName: string) => {
-      const suffix = showSuffix ? <span style={{ opacity: 0.45 }}>{` | ${fancyName}`}</span> : null
+      // 智谱模型不显示provider名称后缀
+      const suffix = showSuffix && p.id !== 'zhipu' ? <span style={{ opacity: 0.45 }}>{` | ${fancyName}`}</span> : null
 
       let filteredModels = sortBy(p.models, 'name').filter((model) => predicate?.(model) ?? true)
 
@@ -97,7 +98,7 @@ const ModelSelector = ({
             </span>
           </div>
         ),
-        title: `${m.name} | ${fancyName}`,
+        title: p.id === 'zhipu' ? m.name : `${m.name} | ${fancyName}`,
         value: getModelUniqId(m)
       }))
     },

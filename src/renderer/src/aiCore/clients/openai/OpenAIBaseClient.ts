@@ -65,24 +65,34 @@ export abstract class OpenAIBaseClient<
     promptEnhancement
   }: GenerateImageParams): Promise<string[]> {
     const sdk = await this.getSdkInstance()
-    const response = (await sdk.request({
-      method: 'post',
-      path: '/images/generations',
-      signal,
-      body: {
-        model,
-        prompt,
-        negative_prompt: negativePrompt,
-        image_size: imageSize,
-        batch_size: batchSize,
-        seed: seed ? parseInt(seed) : undefined,
-        num_inference_steps: numInferenceSteps,
-        guidance_scale: guidanceScale,
-        prompt_enhancement: promptEnhancement
-      }
-    })) as { data: Array<{ url: string }> }
+    
+    // 构建标准的OpenAI格式请求体
+    const body: any = {
+      model,
+      prompt,
+      negative_prompt: negativePrompt,
+      image_size: imageSize,
+      batch_size: batchSize,
+      seed: seed ? parseInt(seed) : undefined,
+      num_inference_steps: numInferenceSteps,
+      guidance_scale: guidanceScale,
+      prompt_enhancement: promptEnhancement
+    }
 
-    return response.data.map((item) => item.url)
+    try {
+      logger.debug('Calling OpenAI image generation API with params:', body)
+      
+      const response = await sdk.images.generate(body, { signal })
+      
+      if (response.data && response.data.length > 0) {
+        return response.data.map((image: any) => image.url).filter(Boolean)
+      }
+      
+      return []
+    } catch (error) {
+      logger.error('OpenAI image generation failed:', error as Error)
+      throw error
+    }
   }
 
   override async getEmbeddingDimensions(model: Model): Promise<number> {

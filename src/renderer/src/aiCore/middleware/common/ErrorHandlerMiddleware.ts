@@ -44,16 +44,24 @@ export const ErrorHandlerMiddleware =
       logger.debug('🔧 检查是否为智谱模型:', {
         modelId: params.assistant.model?.id,
         isZhipuModel: isZhipuModel(params.assistant.model),
-        errorStatus: error.status
+        errorStatus: error.status,
+        enableGenerateImage: params.enableGenerateImage
       })
 
-      if (isZhipuModel(params.assistant.model) && error.status) {
-        logger.debug('🔧 开始处理智谱错误:', {
+      // 只有对话功能（enableGenerateImage为false）才使用自定义错误处理
+      // 绘画功能（enableGenerateImage为true）使用通用错误处理
+      if (isZhipuModel(params.assistant.model) && error.status && !params.enableGenerateImage) {
+        logger.debug('🔧 开始处理智谱错误（对话功能）:', {
           originalError: error,
           provider: params.assistant.provider
         })
         processedError = handleZhipuError(error, params.assistant.provider || {})
         logger.debug('🔧 智谱错误处理完成:', processedError)
+      } else if (isZhipuModel(params.assistant.model) && error.status && params.enableGenerateImage) {
+        logger.debug('🔧 智谱绘画功能使用通用错误处理:', {
+          originalError: error
+        })
+        // 绘画功能使用原始错误，不做自定义处理
       }
 
       // 1. 使用通用的工具函数将错误解析为标准格式

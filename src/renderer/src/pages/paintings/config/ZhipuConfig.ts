@@ -26,7 +26,7 @@ export const DEFAULT_PAINTING = {
 
 export const QUALITY_OPTIONS = [
   { label: '标准（默认）', value: 'standard' },
-  { label: '高清', value: 'high' }
+  { label: '高清', value: 'hd' }
 ]
 
 export const IMAGE_SIZES = [
