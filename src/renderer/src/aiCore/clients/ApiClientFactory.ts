@@ -9,7 +9,6 @@ import { GeminiAPIClient } from './gemini/GeminiAPIClient'
 import { VertexAPIClient } from './gemini/VertexAPIClient'
 import { NewAPIClient } from './NewAPIClient'
 import { OpenAIAPIClient } from './openai/OpenAIApiClient'
-import { OpenAIResponseAPIClient } from './openai/OpenAIResponseAPIClient'
 import { PPIOAPIClient } from './ppio/PPIOAPIClient'
 import { ZhipuAPIClient } from './zhipu/ZhipuAPIClient'
 
@@ -68,7 +67,7 @@ export class ApiClientFactory {
         logger.debug(`Creating GeminiAPIClient for provider: ${provider.id}`)
         instance = new GeminiAPIClient(provider) as BaseApiClient
         break
-      case 'vertex':
+      case 'vertexai':
         logger.debug(`Creating VertexAPIClient for provider: ${provider.id}`)
         instance = new VertexAPIClient(provider) as BaseApiClient
         break

@@ -52,11 +52,11 @@ export class ZhipuAPIClient extends BaseApiClient<
   }
 
   // 实现必需的抽象方法
-  async createCompletions(payload: SdkParams, options?: any): Promise<SdkRawOutput> {
+  async createCompletions(_payload: SdkParams, _options?: any): Promise<SdkRawOutput> {
     throw new Error('ZhipuAPIClient does not support text completions')
   }
 
-  async getEmbeddingDimensions(model?: Model): Promise<number> {
+  async getEmbeddingDimensions(_model?: Model): Promise<number> {
     throw new Error('ZhipuAPIClient does not support embeddings')
   }
 
@@ -72,44 +72,44 @@ export class ZhipuAPIClient extends BaseApiClient<
     throw new Error('ZhipuAPIClient does not support request transformation')
   }
 
-  getResponseChunkTransformer(ctx: CompletionsContext): ResponseChunkTransformer<SdkRawChunk> {
+  getResponseChunkTransformer(_ctx: CompletionsContext): ResponseChunkTransformer<SdkRawChunk> {
     throw new Error('ZhipuAPIClient does not support response chunk transformation')
   }
 
-  convertMcpToolsToSdkTools(mcpTools: MCPTool[]): SdkTool[] {
+  convertMcpToolsToSdkTools(_mcpTools: MCPTool[]): SdkTool[] {
     throw new Error('ZhipuAPIClient does not support tool conversion')
   }
 
-  convertSdkToolCallToMcp(toolCall: SdkToolCall, mcpTools: MCPTool[]): MCPTool | undefined {
+  convertSdkToolCallToMcp(_toolCall: SdkToolCall, _mcpTools: MCPTool[]): MCPTool | undefined {
     throw new Error('ZhipuAPIClient does not support tool call conversion')
   }
 
-  convertSdkToolCallToMcpToolResponse(toolCall: SdkToolCall, mcpTool: MCPTool): ToolCallResponse {
+  convertSdkToolCallToMcpToolResponse(_toolCall: SdkToolCall, _mcpTool: MCPTool): ToolCallResponse {
     throw new Error('ZhipuAPIClient does not support tool call response conversion')
   }
 
   buildSdkMessages(
-    currentReqMessages: SdkMessageParam[],
-    output: SdkRawOutput | string | undefined,
-    toolResults: SdkMessageParam[],
-    toolCalls?: SdkToolCall[]
+    _currentReqMessages: SdkMessageParam[],
+    _output: SdkRawOutput | string | undefined,
+    _toolResults: SdkMessageParam[],
+    _toolCalls?: SdkToolCall[]
   ): SdkMessageParam[] {
     throw new Error('ZhipuAPIClient does not support message building')
   }
 
-  estimateMessageTokens(message: SdkMessageParam): number {
+  estimateMessageTokens(_message: SdkMessageParam): number {
     throw new Error('ZhipuAPIClient does not support token estimation')
   }
 
   convertMcpToolResponseToSdkMessageParam(
-    mcpToolResponse: MCPToolResponse,
-    resp: MCPCallToolResponse,
-    model: Model
+    _mcpToolResponse: MCPToolResponse,
+    _resp: MCPCallToolResponse,
+    _model: Model
   ): SdkMessageParam | undefined {
     throw new Error('ZhipuAPIClient does not support tool response conversion')
   }
 
-  extractMessagesFromSdkPayload(sdkPayload: SdkParams): SdkMessageParam[] {
+  extractMessagesFromSdkPayload(_sdkPayload: SdkParams): SdkMessageParam[] {
     throw new Error('ZhipuAPIClient does not support message extraction')
   }
 

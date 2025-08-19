@@ -1,5 +1,4 @@
 import { PlusOutlined } from '@ant-design/icons'
-import { loggerService } from '@logger'
 import AiProvider from '@renderer/aiCore'
 import { Navbar, NavbarCenter, NavbarRight } from '@renderer/components/app/Navbar'
 import ModelLabels from '@renderer/components/ModelLabels'
@@ -17,7 +16,7 @@ import type { PaintingsState } from '@renderer/types'
 import { uuid } from '@renderer/utils'
 import { Avatar, Button, InputNumber, Radio, Select } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
-import React, { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
@@ -27,8 +26,6 @@ import { SettingHelpLink, SettingTitle } from '../settings'
 import Artboard from './components/Artboard'
 import PaintingsList from './components/PaintingsList'
 import { COURSE_URL, DEFAULT_PAINTING, IMAGE_SIZES, QUALITY_OPTIONS, TOP_UP_URL, ZHIPU_PAINTING_MODELS } from './config/ZhipuConfig'
-
-const logger = loggerService.withContext('ZhipuPage')
 
 const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
   const [mode] = useState<keyof PaintingsState>('paintings')
