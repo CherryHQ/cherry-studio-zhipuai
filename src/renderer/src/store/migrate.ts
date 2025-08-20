@@ -2115,7 +2115,22 @@ const migrateConfig = {
   },
   '133': (state: RootState) => {
     try {
-      // 1. 推荐智谱作为第一位提供商，但只在用户没有自定义过顺序的情况下执行
+      state.settings.mathEnableSingleDollar = true
+      return state
+    } catch (error) {
+      logger.error('migrate 133 error', error as Error)
+      return state
+    }
+  },
+  '134': (state: RootState) => {
+    try {
+      // 1. 确保智谱供应商被启用
+      const zhipuProvider = state.llm.providers.find((p) => p.id === 'zhipu')
+      if (zhipuProvider) {
+        zhipuProvider.enabled = true
+      }
+
+      // 2. 推荐智谱作为第一位提供商，但只在用户没有自定义过顺序的情况下执行
       const zhipuIndex = state.llm.providers.findIndex((p) => p.id === 'zhipu')
       const siliconIndex = state.llm.providers.findIndex((p) => p.id === 'silicon')
 
@@ -2127,8 +2142,7 @@ const migrateConfig = {
         state.llm.providers.unshift(zhipuProvider)
       }
 
-      // 2. 更新智谱模型列表
-      const zhipuProvider = state.llm.providers.find((p) => p.id === 'zhipu')
+      // 3. 更新智谱模型列表
       if (zhipuProvider) {
         // 添加新的4.5系列模型
         const newModels = [
@@ -2299,7 +2313,7 @@ const migrateConfig = {
 
       return state
     } catch (error) {
-      logger.error('migrate 132 error', error as Error)
+      logger.error('migrate 134 error', error as Error)
       return state
     }
   }

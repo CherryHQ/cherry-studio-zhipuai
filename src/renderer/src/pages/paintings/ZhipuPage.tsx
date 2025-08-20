@@ -33,6 +33,16 @@ const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
   const [painting, setPainting] = useState<any>(paintings?.[0] || DEFAULT_PAINTING)
   const { t } = useTranslation()
   const providers = useAllProviders()
+
+  // 确保painting使用智谱的cogview系列模型
+  useEffect(() => {
+    if (painting && !painting.model?.startsWith('cogview')) {
+      const updatedPainting = { ...painting, model: 'cogview-3-flash' }
+      setPainting(updatedPainting)
+      updatePainting('paintings', updatedPainting)
+    }
+  }, [painting, updatePainting])
+  
   const providerOptions = Options.map((option) => {
     const provider = providers.find((p) => p.id === option)
     if (provider) {
