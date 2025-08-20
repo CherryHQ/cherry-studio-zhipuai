@@ -2788,7 +2788,8 @@
         "modelscope": "Διακομιστής MCP κοινότητας ModelScope",
         "official": "Επίσημη συλλογή διακομιστών MCP",
         "pulsemcp": "Διακομιστής Pulse MCP",
-        "smithery": "Εργαλείο Smithery MCP"
+        "smithery": "Εργαλείο Smithery MCP",
+        "zhipu": "Επιλεγμένο MCP, Γρήγορη Ενσωμάτωση"
       },
       "name": "Όνομα",
       "newServer": "Διακομιστής MCP",

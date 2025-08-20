@@ -1262,33 +1262,33 @@ export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> =
       group: 'GLM-4',
       apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
     },
-    // GLM-4v 系列
+    // GLM-4V 系列
     {
       id: 'glm-4v',
       provider: 'zhipu',
       name: 'GLM-4V',
-      group: 'GLM-4v',
+      group: 'GLM-4V',
       apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
     },
     {
       id: 'glm-4v-flash',
       provider: 'zhipu',
       name: 'GLM-4V-Flash',
-      group: 'GLM-4v',
+      group: 'GLM-4V',
       isFree: true
     },
     {
       id: 'glm-4v-plus-0111',
       provider: 'zhipu',
       name: 'GLM-4V-Plus-0111',
-      group: 'GLM-4v',
+      group: 'GLM-4V',
       apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
     },
     {
       id: 'glm-4.1v-thinking-flash',
       provider: 'zhipu',
       name: 'GLM-4.1V-Thinking-Flash',
-      group: 'GLM-4v',
+      group: 'GLM-4V',
       isFree: true
     },
     // GLM-4-AllTools

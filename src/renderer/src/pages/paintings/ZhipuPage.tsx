@@ -134,11 +134,51 @@ const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
       const aiProvider = new AiProvider(zhipuProvider)
       
       // 准备API请求参数
+      let actualImageSize = painting.imageSize
+      
+      // 如果是自定义尺寸，使用实际的宽高值
+      if (painting.imageSize === 'custom') {
+        if (!customWidth || !customHeight) {
+          window.modal.error({
+            content: '请设置自定义尺寸的宽度和高度',
+            centered: true
+          })
+          return
+        }
+        // 验证自定义尺寸是否符合智谱AI的要求
+        if (customWidth < 512 || customWidth > 2048 || customHeight < 512 || customHeight > 2048) {
+          window.modal.error({
+            content: '自定义尺寸必须在512px-2048px之间',
+            centered: true
+          })
+          return
+        }
+        
+        if (customWidth % 16 !== 0 || customHeight % 16 !== 0) {
+          window.modal.error({
+            content: '自定义尺寸必须能被16整除',
+            centered: true
+          })
+          return
+        }
+        
+        const totalPixels = customWidth * customHeight
+        if (totalPixels > 2097152) { // 2^21 = 2097152
+          window.modal.error({
+            content: '自定义尺寸的总像素数不能超过2,097,152',
+            centered: true
+          })
+          return
+        }
+        
+        actualImageSize = `${customWidth}x${customHeight}`
+      }
+      
       const request = {
         model: painting.model,
         prompt: painting.prompt,
         negativePrompt: painting.negativePrompt,
-        imageSize: painting.imageSize,
+        imageSize: actualImageSize,
         batchSize: painting.numImages,
         quality: painting.quality,
         signal: controller.signal
@@ -305,6 +345,22 @@ const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
     }
   }, [painting])
 
+  // 同步自定义尺寸状态
+  useEffect(() => {
+    if (painting.imageSize === 'custom') {
+      setIsCustomSize(true)
+      // 恢复自定义尺寸的宽高值
+      if (painting.customWidth) {
+        setCustomWidth(painting.customWidth)
+      }
+      if (painting.customHeight) {
+        setCustomHeight(painting.customHeight)
+      }
+    } else {
+      setIsCustomSize(false)
+    }
+  }, [painting.imageSize, painting.customWidth, painting.customHeight])
+
   return (
     <Container>
       <Navbar>
@@ -348,10 +404,15 @@ const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
           </Select>
 
           <SettingTitle style={{ marginBottom: 5, marginTop: 15 }}>{t('common.model')}</SettingTitle>
-          <Select value={painting.model} onChange={onSelectModel}>
+          <Select 
+            value={painting.model} 
+            onChange={onSelectModel}
+            style={{ width: '100%' }}
+            dropdownStyle={{ minWidth: '280px' }}
+          >
             {ZHIPU_PAINTING_MODELS.map((model) => (
               <Select.Option key={model.id} value={model.id}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: '260px' }}>
                   <span>{model.name}</span>
                   <ModelLabels model={model} parentContainer="default" />
                 </div>
