@@ -2291,10 +2291,7 @@ const migrateConfig = {
       // 这里我们不需要直接修改状态，因为默认模型是在组件中设置的
       // 这个迁移主要用于版本标记，确保用户知道有新的默认嵌入模型
 
-      // 6. 清除智谱错误测试状态（确保测试不影响正常使用）
-      if (typeof window !== 'undefined' && window.localStorage) {
-        window.localStorage.removeItem('test_zhipu_error')
-      }
+
 
       // 6. 为 codeTools 设置默认模型
       if (state.codeTools) {

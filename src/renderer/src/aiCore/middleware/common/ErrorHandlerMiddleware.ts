@@ -116,7 +116,6 @@ function handleZhipuError(error: any, provider: any): any {
         error.message.includes('AuthenticationError') ||
         error.message.includes('Unauthorized')))
   ) {
-    logger.debug('🔧 检测到401错误，返回zhipu.no_api_key')
     return {
       ...error,
       message: 'zhipu.no_api_key'
@@ -125,25 +124,24 @@ function handleZhipuError(error: any, provider: any): any {
 
   // 检查免费配额用尽错误（优先级更高，先检查）
   if (
-    error.status === 429 ||
+    error.error?.code === '1304' ||
     (error.message &&
-      (error.message.includes('免费配额') ||
+      (error.message.includes('限额') ||
+        error.message.includes('免费配额') ||
         error.message.includes('free quota') ||
         error.message.includes('rate limit')))
   ) {
-    logger.debug('🔧 检测到配额用尽错误，返回zhipu.quota_exceeded')
     return {
       ...error,
       message: 'zhipu.quota_exceeded'
     }
   }
 
-  // 检查余额不足错误 (通常状态码为402或特定错误消息)
+  // 检查余额不足错误 (通常状态码为429或特定错误消息)
   if (
-    error.status === 402 ||
+    error.status === 429 ||
     (error.message && (error.message.includes('余额不足') || error.message.includes('insufficient balance')))
   ) {
-    logger.debug('🔧 检测到余额不足错误，返回zhipu.insufficient_balance')
     return {
       ...error,
       message: 'zhipu.insufficient_balance'
@@ -152,7 +150,6 @@ function handleZhipuError(error: any, provider: any): any {
 
   // 检查API Key是否配置（放在最后，避免覆盖其他错误类型）
   if (!provider || !provider.apiKey || provider.apiKey.trim() === '') {
-    logger.debug('🔧 API Key未配置，返回zhipu.no_api_key')
     return {
       ...error,
       message: 'zhipu.no_api_key'
