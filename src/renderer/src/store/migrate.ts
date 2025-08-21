@@ -2225,11 +2225,15 @@ const migrateConfig = {
           }
         ]
 
-        // 添加新模型（如果不存在）
+        // 添加新模型或更新现有模型的配置（特别是apiKeyLink）
         newModels.forEach(newModel => {
           const existingModel = zhipuProvider.models.find(m => m.id === newModel.id)
           if (!existingModel) {
+            // 如果模型不存在，添加新模型
             zhipuProvider.models.push(newModel)
+          } else {
+            // 如果模型已存在，更新配置（特别是apiKeyLink）
+            Object.assign(existingModel, newModel)
           }
         })
 
