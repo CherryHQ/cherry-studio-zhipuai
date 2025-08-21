@@ -66,6 +66,9 @@ const ModelSelector = ({
       if (p.id === 'zhipu') {
         const hasApiKey = p.apiKey && p.apiKey.trim() !== ''
 
+        // 剔除cogview系列模型
+        filteredModels = filteredModels.filter((m) => !m.id.startsWith('cogview') && m.group !== 'Cogview')
+
         // 如果未配置API Key，只显示四个指定模型
         if (!hasApiKey) {
           filteredModels = filteredModels.filter(

@@ -139,7 +139,7 @@ function handleZhipuError(error: any, provider: any): any {
 
   // 检查余额不足错误 (通常状态码为429或特定错误消息)
   if (
-    error.status === 429 ||
+    (error.status === 429 && error.error?.code === '1113') ||
     (error.message && (error.message.includes('余额不足') || error.message.includes('insufficient balance')))
   ) {
     return {

@@ -41,7 +41,8 @@ const calculateModelGroups = (models: Model[], searchText: string): ModelGroups 
     if (key === 'GLM-4.5') return '0' // 让 GLM-4.5 排在最前面
     if (key === 'GLM-4.5V') return '1' // 让 GLM-4.5V 排在 GLM-4.5 后面
     if (key === 'GLM-4') return '2' // 让 GLM-4 排在 GLM-4.5V 后面
-    if (key === 'GLM-3') return '3' // 让 GLM-3 排在 GLM-4 后面
+    if (key === 'Cogview') return '3' // 让 Cogview 排在 GLM-4 后面
+    if (key === 'GLM-3') return '4' // 让 GLM-3 排在 Cogview 后面
     return key // 其他分组按字母顺序排序
   })
 

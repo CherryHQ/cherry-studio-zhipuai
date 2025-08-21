@@ -1211,20 +1211,19 @@ export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> =
       group: 'GLM-Z1',
       apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
     },
-    // GLM-3 系列
+    // Cogview 系列
     {
       id: 'cogview-3-flash',
       provider: 'zhipu',
       name: 'CogView-3-Flash',
-      group: 'GLM-3',
+      group: 'Cogview',
       isFree: true
     },
-    // GLM-4 系列
     {
       id: 'cogview-4-250304',
       provider: 'zhipu',
       name: 'CogView-4-250304',
-      group: 'GLM-4',
+      group: 'Cogview',
       apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
     },
     {

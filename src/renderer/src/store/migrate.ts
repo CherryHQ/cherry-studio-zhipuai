@@ -2206,14 +2206,14 @@ const migrateConfig = {
             id: 'cogview-3-flash',
             provider: 'zhipu',
             name: 'CogView-3-Flash',
-            group: 'GLM-3',
+            group: 'Cogview',
             isFree: true
           },
           {
             id: 'cogview-4-250304',
             provider: 'zhipu',
             name: 'CogView-4-250304',
-            group: 'GLM-4',
+            group: 'Cogview',
             apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
           }
         ]

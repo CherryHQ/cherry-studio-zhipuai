@@ -96,7 +96,7 @@ export const useCodeTools = () => {
   const canLaunch = Boolean(codeToolsState.selectedCliTool && selectedModel && codeToolsState.currentDirectory)
 
   // 自动设置默认模型：只在首次选择CLI工具时（模型为null且未初始化过）才设置默认模型
-  useEffect(() => {
+  /* useEffect(() => {
     const currentTool = codeToolsState.selectedCliTool
     const currentToolModel = codeToolsState.selectedModels[currentTool]
     
@@ -117,7 +117,7 @@ export const useCodeTools = () => {
       // 如果用户选择了模型，标记该工具已初始化（防止后续自动设置）
       initializedTools.current.add(currentTool)
     }
-  }, [codeToolsState.selectedCliTool, providers, setModel, logger])
+  }, [codeToolsState.selectedCliTool, providers, setModel, logger]) */
 
   return {
     // 状态

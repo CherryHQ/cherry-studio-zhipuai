@@ -76,6 +76,9 @@ const PopupContainer: React.FC<Props> = ({ model, resolve, modelFilter }) => {
       if (provider.id === 'zhipu') {
         const hasApiKey = provider.apiKey && provider.apiKey.trim() !== ''
 
+        // 剔除cogview系列模型
+        models = models.filter((m) => !m.id.startsWith('cogview') && m.group !== 'Cogview')
+
         // 如果未配置API Key，只显示四个指定模型
         if (!hasApiKey) {
           models = models.filter(
