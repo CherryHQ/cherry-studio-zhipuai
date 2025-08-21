@@ -1,5 +1,6 @@
 import ModelAvatar from '@renderer/components/Avatar/ModelAvatar'
 import ModelLabels from '@renderer/components/ModelLabels'
+import { isEmbeddingModel } from '@renderer/config/models'
 import { getModelUniqId } from '@renderer/services/ModelService'
 import { Model, Provider } from '@renderer/types'
 import { matchKeywordsInString } from '@renderer/utils'
@@ -69,10 +70,10 @@ const ModelSelector = ({
         // 剔除cogview系列模型
         filteredModels = filteredModels.filter((m) => !m.id.startsWith('cogview') && m.group !== 'Cogview')
 
-        // 如果未配置API Key，只显示四个指定模型
+        // 如果未配置API Key，只显示四个指定模型和嵌入模型
         if (!hasApiKey) {
           filteredModels = filteredModels.filter(
-            (m) => m.id === 'glm-4.5-flash' || m.id === 'glm-4.5' || m.id === 'glm-4.5-air' || m.id === 'glm-4.5v'
+            (m) => m.id === 'glm-4.5-flash' || m.id === 'glm-4.5' || m.id === 'glm-4.5-air' || m.id === 'glm-4.5v' || isEmbeddingModel(m)
           )
         }
 

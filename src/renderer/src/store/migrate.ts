@@ -2122,7 +2122,7 @@ const migrateConfig = {
       return state
     }
   },
-  '135': (state: RootState) => {
+  '136': (state: RootState) => {
     try {
       // 1. 确保智谱供应商被启用
       const zhipuProvider = state.llm.providers.find((p) => p.id === 'zhipu')
@@ -2193,27 +2193,34 @@ const migrateConfig = {
             provider: 'zhipu',
             name: 'GLM-4.1V-Thinking-Flash',
             group: 'GLM-4V',
-            isFree: true
+            apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
           },
           {
             id: 'glm-4v-flash',
             provider: 'zhipu',
             name: 'GLM-4V-Flash',
             group: 'GLM-4V',
-            isFree: true
+            apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
           },
           {
             id: 'cogview-3-flash',
             provider: 'zhipu',
             name: 'CogView-3-Flash',
             group: 'Cogview',
-            isFree: true
+            apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
           },
           {
             id: 'cogview-4-250304',
             provider: 'zhipu',
             name: 'CogView-4-250304',
             group: 'Cogview',
+            apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
+          },
+          {
+            id: 'embedding-3',
+            provider: 'zhipu',
+            name: 'Embedding-3',
+            group: 'Embedding',
             apiKeyLink: 'https://zhipuaishengchan.datasink.sensorsdata.cn/t/yv'
           }
         ]
